@@ -82,7 +82,6 @@ export default {
     search: '',
     state: null,
     user: null,
-    invalid: false,
     loading: false,
     error: false,
   }),
@@ -92,10 +91,8 @@ export default {
       if (this.error) this.error = false;
       if (this.search === '') {
         this.state = false;
-        this.invalid = true;
       } else {
         this.state = null;
-        this.invalid = false;
         try {
           this.loading = true;
           const user = await fetchUser(this.search);
