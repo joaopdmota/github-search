@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`search view component renders the correct snapshot 1`] = `
+<div class="csogJw">
+  <div class="hfazVC bHYHHw">
+    <h1 class="eHwBcJ">Github profile search</h1>
+    <div class="gDjLHi"></div>
+    <div class="hxZbeR"><input id="search_input" type="text" placeholder="Enter your name" class="form-control">
+      <div class="hWwYtV"></div> <button id="search_button" type="button" class="btn btn-dark"><span>
+          Pesquisar
+        </span></button>
+    </div>
+  </div>
+  <!---->
+  <!---->
+</div>
+`;

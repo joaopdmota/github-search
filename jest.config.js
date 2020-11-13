@@ -1,11 +1,12 @@
 module.exports = {
-  bail: 1,
+  preset: '@vue/cli-plugin-unit-jest',
   moduleFileExtensions: ['js', 'vue', 'json'],
   transform: {
     '^.+\\.js$': 'babel-jest',
     '.*\\.(vue)$': 'vue-jest',
   },
   collectCoverage: true,
+  setupFilesAfterEnv: ['./tests/setup.js'],
   collectCoverageFrom: ['<rootDir>/src/**/*.{js,vue}', '!**/node_modules/**'],
   verbose: true,
 };

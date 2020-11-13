@@ -5,13 +5,14 @@
       <Divider space="20" />
       <Wrapper>
         <b-form-input
+          id="search_input"
           :state="state"
           v-model="search"
           placeholder="Enter your name"
           @keyup.enter="searchUser"
         ></b-form-input>
         <Separator space="10" />
-        <b-button variant="dark" @click="searchUser">
+        <b-button variant="dark" @click="searchUser" id="search_button">
           <b-spinner label="Spinning" v-if="loading"></b-spinner>
           <span v-else>
             Pesquisar
@@ -25,6 +26,7 @@
       <Divider space="20" />
     </Wrapper>
     <Wrapper
+      id="user_info"
       v-if="user"
       alignItems="center"
       justify="center"
