@@ -20,7 +20,12 @@
         </b-button>
       </Wrapper>
     </Container>
-    <Wrapper v-if="error" justify="center" direction="column">
+    <Wrapper
+      v-if="error"
+      justify="center"
+      direction="column"
+      id="not_found_user"
+    >
       <Divider space="20" />
       <b-alert show variant="danger">Falha ao pesquisar usuário</b-alert>
       <Divider space="20" />
@@ -88,22 +93,32 @@ export default {
     error: false,
   }),
   methods: {
+    resetStates() {
+      this.user = null;
+      this.error = false;
+    },
+    validateUser() {
+      if (this.user || this.error) this.resetStates();
+      if (this.search !== '') {
+        this.state = true;
+        return this.state;
+      }
+
+      this.state = false;
+      return this.state;
+    },
     async searchUser() {
-      if (this.user) this.user = null;
-      if (this.error) this.error = false;
-      if (this.search === '') {
-        this.state = false;
-      } else {
+      if (this.validateUser()) {
         this.state = null;
         try {
           this.loading = true;
-          const user = await fetchUser(this.search);
-          this.user = user.data;
-          const { data } = await fetchRepositories(this.user.login);
-          if (data.length > 4) {
-            data.length = 4;
+          const { data: user } = await fetchUser(this.search);
+          this.user = user;
+          const { data: repos } = await fetchRepositories(this.user.login);
+          if (repos.length > 4) {
+            repos.length = 4;
           }
-          this.user.repos = data;
+          this.user.repos = repos;
         } catch {
           this.error = true;
         } finally {

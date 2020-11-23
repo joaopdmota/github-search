@@ -1,8 +1,12 @@
 import { mount } from '@vue/test-utils';
-import nock from 'nock';
+import flushPromises from 'flush-promises';
 import SearchView from '../../../../src/components/SearchView/SearchView.vue';
-import userFixture from './fixtures/user.json';
-import reposFixture from './fixtures/repos.json';
+import userFixture from '../../fixtures/user.json';
+import reposFixture from '../../fixtures/repos.json';
+
+jest.mock('../../../../src/services');
+
+import { fetchRepositories, fetchUser } from '../../../../src/services';
 
 describe('search view component', () => {
 	test('renders the correct snapshot', () => {
@@ -12,41 +16,57 @@ describe('search view component', () => {
 
 	describe('when user input some value', () => {
 			describe('when github api returns an user', () => {
-				beforeAll(() => {
-					const expectedUser = 'joaopdmota';
-					nock('https://api.github.com').get(`/users/${expectedUser}`).reply(200, { data: userFixture});
-					nock('https://api.github.com').get(`/users/${expectedUser}/repos`).reply(200, { data: reposFixture});
-				});
+					test('should render user info', async () => {
+					beforeAll(() => {
+						fetchRepositories.mockImplementation(() => ({ data: reposFixture }));
+						fetchUser.mockImplementation(() => ({ data: userFixture }));
+					});
 
-				test('should render user info', async () => {
 					const wrapper = mount(SearchView);
 					const input = wrapper.find('#search_input');
 					await input.setValue('joaopdmota');
 					const button = wrapper.find('#search_button');
 					await button.trigger('click');
-					expect(wrapper.vm.loading).toBe(true);
 
-					wrapper.vm.$nextTick(() => {
-						expect(wrapper.vm.loading).toBe(false);
-						expect(wrapper.vm.error).toBe(false);
-						expect(wrapper.find('#user_info').exists()).toBe(true);
-						done();
-					})
+					await flushPromises();
+
+					expect(wrapper.vm.loading).toBe(false);
+					expect(wrapper.vm.error).toBe(false);
+					expect(wrapper.find('#user_info').exists()).toBe(true);
 				});
-			})
+			});
 
 			describe('when github api returns an error', () => {
-				// test('', () => {
-				// 	const wrapper = mount(SearchView);
-				// 	expect(wrapper).toMatchSnapshot();
-				// });
-			})
-	})
+				test('should render an error', async () => {
+
+					const wrapper = mount(SearchView);
+					const input = wrapper.find('#search_input');
+					await input.setValue('kdpaso');
+					const button = wrapper.find('#search_button');
+					await button.trigger('click');
+
+					await flushPromises();
+
+					expect(wrapper.vm.loading).toBe(false);
+					expect(wrapper.vm.error).toBe(true);
+					expect(wrapper.find('#not_found_user').exists()).toBe(true);
+				});
+			});
+	});
 
 	describe('when user does not input value', () => {
-		// test('', () => {
-		// 	const wrapper = mount(SearchView);
-		// 	expect(wrapper).toMatchSnapshot();
-		// });
+		test('should change input state', async () => {
+
+			const wrapper = mount(SearchView);
+			const input = wrapper.find('#search_input');
+			await input.setValue('');
+			const button = wrapper.find('#search_button');
+			await button.trigger('click');
+
+			await flushPromises();
+
+			// invalid state
+			expect(wrapper.vm.state).toBe(false);
+		});
 	});
 });

@@ -7,6 +7,11 @@ module.exports = {
   },
   collectCoverage: true,
   setupFilesAfterEnv: ['./tests/setup.js'],
-  collectCoverageFrom: ['<rootDir>/src/**/*.{js,vue}', '!**/node_modules/**'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.{js,vue}',
+    '!**/node_modules/**',
+    '!<rootDir>/src/App.vue',
+    '!<rootDir>/src/main.js',
+  ],
   verbose: true,
 };
